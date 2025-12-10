@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Pul o'tkazish{% endblock %}
+{% block content %}
+<section class="mx-auto w-full max-w-3xl rounded-3xl border border-white/10 bg-slate-900/70 p-8">
+    <div class="mb-8">
+        <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Operatsiya</p>
+        <h1 class="text-3xl font-semibold text-white">Pul o'tkazish</h1>
+        <p class="text-sm text-slate-400">Email orqali boshqa foydalanuvchiga mablag' yuboring.</p>
+    </div>
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <p class="text-sm text-rose-400">{{ form.non_field_errors|striptags }}</p>
+        {% endif %}
+        {% for field in form %}
+            <div class="space-y-2">
+                <label class="text-sm text-slate-300" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-sm text-rose-400">{{ field.errors|striptags }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-teal-400 to-blue-400 px-4 py-3 text-base font-semibold text-slate-900">
+            O'tkazishni tasdiqlash
+        </button>
+    </form>
+</section>
+{% endblock %}

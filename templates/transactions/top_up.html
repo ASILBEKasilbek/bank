@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Kartani to'ldirish{% endblock %}
+{% block content %}
+<section class="mx-auto w-full max-w-3xl rounded-3xl border border-white/10 bg-slate-900/70 p-8">
+    <div class="mb-8">
+        <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Operatsiya</p>
+        <h1 class="text-3xl font-semibold text-white">Kartani to'ldirish</h1>
+        <p class="text-sm text-slate-400">Balansingizni istalgan summaga to'ldiring.</p>
+        {% if request.user.is_staff and not is_fake %}
+            <a href="{% url 'top_up' %}?fake=1" class="mt-3 inline-flex items-center rounded-full border border-amber-300/40 px-4 py-1 text-xs text-amber-200">
+                Fake to'lov rejimini yoqish
+            </a>
+        {% endif %}
+        {% if is_fake %}
+            <div class="mt-4 rounded-2xl border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+                Fake to'lov rejimi: Ushbu operatsiya faqat test ma'lumotlari sifatida saqlanadi.
+            </div>
+        {% endif %}
+    </div>
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+        {% if is_fake %}
+            <input type="hidden" name="fake" value="1">
+        {% endif %}
+        {% if form.non_field_errors %}
+            <p class="text-sm text-rose-400">{{ form.non_field_errors|striptags }}</p>
+        {% endif %}
+        {% for field in form %}
+            <div class="space-y-2">
+                <label class="text-sm text-slate-300" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-sm text-rose-400">{{ field.errors|striptags }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-fuchsia-400 px-4 py-3 text-base font-semibold text-slate-900">
+            Tasdiqlash
+        </button>
+    </form>
+</section>
+{% endblock %}

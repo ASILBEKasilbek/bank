@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Kirish{% endblock %}
+{% block content %}
+<section class="mx-auto mt-10 max-w-xl rounded-3xl border border-white/10 bg-slate-900/70 p-8 shadow-2xl shadow-teal-500/5">
+    <div class="mb-8 space-y-2">
+        <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Session</p>
+        <h1 class="text-3xl font-semibold text-white">Kirish</h1>
+        <p class="text-sm text-slate-400">Email va parol orqali tizimga kiring.</p>
+    </div>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="space-y-2">
+                <label class="text-sm text-slate-300" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-sm text-rose-400">{{ field.errors|striptags }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-teal-400 to-cyan-400 px-4 py-3 text-center text-base font-semibold text-slate-900 shadow-lg shadow-teal-500/30 transition hover:shadow-teal-400/50">
+            Kirish
+        </button>
+    </form>
+    <p class="mt-6 text-center text-sm text-slate-400">
+        Yangi foydalanuvchimisiz?
+        <a href="{% url 'register' %}" class="text-teal-300">Ro'yxatdan o'ting</a>
+    </p>
+</section>
+{% endblock %}

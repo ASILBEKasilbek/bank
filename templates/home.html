@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Bank{% endblock %}
+{% block content %}
+<section class="rounded-3xl border border-white/10 bg-slate-900/70 p-8 text-center">
+    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Bank</p>
+    <h1 class="mt-3 text-4xl font-semibold text-white">Oson ro'yxatdan o'ting, balansingizni boshqaring</h1>
+    <p class="mt-4 text-sm text-slate-300">
+        Login/Register, Dashboard, Profil va Admin panel bo'yicha barcha talablaringiz shu loyihada ishlangan.
+        Boshlash uchun ro'yxatdan o'ting yoki mavjud hisobga kiring.
+    </p>
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <a href="{% url 'register' %}" class="rounded-2xl bg-neon px-6 py-3 text-base font-semibold text-night">Ro'yxatdan o'tish</a>
+        <a href="{% url 'login' %}" class="rounded-2xl border border-white/30 px-6 py-3 text-base font-semibold text-white">Kirish</a>
+        <a href="{% url 'docs' %}" class="rounded-2xl border border-white/10 px-6 py-3 text-base font-semibold text-white/80">Talablar hujjati</a>
+    </div>
+</section>
+<section class="mt-8 grid gap-6 lg:grid-cols-3">
+    {% for section in sections %}
+        <article class="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
+            <p class="text-sm text-slate-400">{{ section.title }}</p>
+            <h2 class="mt-2 text-xl font-semibold text-white">{{ section.description }}</h2>
+            <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                {% for item in section.items %}
+                    <li class="flex gap-2">
+                        <span class="text-neon">▹</span>
+                        <span>{{ item }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+    {% endfor %}
+</section>
+{% endblock %}

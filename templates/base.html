@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bank tizimi{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        night: '#030712',
+                        neon: '#2dd4bf',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        ::selection { background-color: #2dd4bf; color: #020617; }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(45,212,191,0.15), transparent 40%),
+                        radial-gradient(circle at 80% 0%, rgba(96,165,250,0.12), transparent 45%),
+                        radial-gradient(circle at 50% 80%, rgba(244,114,182,0.18), transparent 45%);
+            filter: blur(60px);
+            opacity: 0.8;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="min-h-full font-display text-slate-100 bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <div class="relative min-h-screen">
+        <header class="sticky top-0 z-40 border-b border-white/10 backdrop-blur bg-slate-950/70">
+            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+                <a href="{% url 'dashboard' %}" class="text-xl font-semibold tracking-tight">
+                    🏦 Bank
+                </a>
+                <nav class="flex items-center gap-3 text-sm">
+                    <a href="{% url 'dashboard' %}" class="rounded-full px-4 py-2 transition hover:bg-white/10">Bosh sahifa</a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'transfer' %}" class="rounded-full px-4 py-2 transition hover:bg-white/10">Pul o'tkazish</a>
+                        <a href="{% url 'top_up' %}" class="rounded-full px-4 py-2 transition hover:bg-white/10">Kartani to'ldirish</a>
+                        <a href="{% url 'profile' %}" class="rounded-full px-4 py-2 transition hover:bg-white/10">Profil</a>
+                    {% endif %}
+                    <a href="{% url 'docs' %}" class="rounded-full px-4 py-2 transition hover:bg-white/10">Hujjat</a>
+                </nav>
+                <div class="flex items-center gap-3 text-sm">
+                    {% if request.user.is_authenticated %}
+                        <span class="hidden text-slate-300 md:block">{{ request.user.get_full_name|default:request.user.email }}</span>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-widest text-slate-200 transition hover:border-neon hover:text-neon">Chiqish</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-widest text-slate-200 transition hover:border-neon hover:text-neon">Kirish</a>
+                        <a href="{% url 'register' %}" class="rounded-full bg-neon px-4 py-2 text-xs font-semibold text-night">Ro'yxatdan o'tish</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6">
+            {% if messages %}
+                <div class="space-y-3">
+                    {% for message in messages %}
+                        <div class="rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-slate-100">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

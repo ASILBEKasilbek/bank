@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+<section class="grid gap-6 lg:grid-cols-3">
+    <div class="rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 p-6">
+        <div class="flex flex-col items-center text-center">
+            <div class="relative mb-4 h-32 w-32 overflow-hidden rounded-3xl border border-white/10 bg-slate-800">
+                {% if request.user.profile.profile_image %}
+                    <img src="{{ request.user.profile.profile_image.url }}" alt="Profil" class="h-full w-full object-cover">
+                {% else %}
+                    <div class="flex h-full w-full items-center justify-center text-4xl">👤</div>
+                {% endif %}
+            </div>
+            <h2 class="text-2xl font-semibold text-white">{{ request.user.get_full_name|default:request.user.email }}</h2>
+            <p class="text-sm text-slate-400">Balans: {{ request.user.profile.balance|floatformat:2 }} so'm</p>
+            <span class="mt-3 inline-flex items-center rounded-full border border-white/10 px-4 py-1 text-xs text-slate-300">
+                {% if request.user.profile.is_face_verified %}Yuz tasdiqlangan{% else %}Tasdiqlanmagan{% endif %}
+            </span>
+        </div>
+        <div class="mt-6 space-y-2 text-sm text-slate-300">
+            <p>Email: {{ request.user.email }}</p>
+            <p>Ro'yxatdan o'tgan: {{ request.user.date_joined|date:"d.m.Y" }}</p>
+            <p>Oxirgi kiritish: {{ request.user.last_login|default:"-" }}</p>
+        </div>
+    </div>
+    <div class="lg:col-span-2 space-y-6">
+        <form method="post" enctype="multipart/form-data" class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 space-y-4">
+            <input type="hidden" name="form_type" value="profile">
+            {% csrf_token %}
+            <div>
+                <h3 class="text-xl font-semibold text-white">Profil ma'lumotlari</h3>
+                <p class="text-sm text-slate-400">Ismingiz, emailingiz va rasmingizni yangilang.</p>
+            </div>
+            {% if profile_form.non_field_errors %}
+                <p class="text-sm text-rose-400">{{ profile_form.non_field_errors|striptags }}</p>
+            {% endif %}
+            {% for field in profile_form %}
+                {% if field.is_hidden %}
+                    {{ field }}
+                {% else %}
+                    <div class="space-y-2">
+                        <label class="text-sm text-slate-300" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p class="text-xs text-slate-500">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% if field.errors %}
+                            <p class="text-sm text-rose-400">{{ field.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-teal-400 to-cyan-400 px-4 py-3 text-base font-semibold text-slate-900">
+                Saqlash
+            </button>
+        </form>
+        <form method="post" class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 space-y-4">
+            <input type="hidden" name="form_type" value="password">
+            {% csrf_token %}
+            <div>
+                <h3 class="text-xl font-semibold text-white">Parolni o'zgartirish</h3>
+                <p class="text-sm text-slate-400">Yangi parol kamida 8 belgidan iborat bo'lsin.</p>
+            </div>
+            {% if password_form.non_field_errors %}
+                <p class="text-sm text-rose-400">{{ password_form.non_field_errors|striptags }}</p>
+            {% endif %}
+            {% for field in password_form %}
+                <div class="space-y-2">
+                    <label class="text-sm text-slate-300" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="text-sm text-rose-400">{{ field.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-fuchsia-400 to-rose-400 px-4 py-3 text-base font-semibold text-slate-900">
+                Parolni yangilash
+            </button>
+        </form>
+    </div>
+</section>
+<section class="mt-6 rounded-3xl border border-white/10 bg-slate-900/70 p-6">
+    <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold text-white">Oxirgi tranzaksiyalar</h3>
+        <span class="text-sm text-slate-400">{{ transactions|length }} ta yozuv</span>
+    </div>
+    <div class="mt-4 grid gap-3">
+        {% for txn in transactions %}
+            <div class="flex items-center justify-between rounded-2xl border border-white/5 bg-slate-950/40 px-4 py-3">
+                <div>
+                    <p class="text-sm font-semibold text-white">{{ txn.get_transaction_type_display }}</p>
+                    <p class="text-xs text-slate-500">{{ txn.created_at|date:"d.m.Y H:i" }}</p>
+                </div>
+                <div class="text-right">
+                    {% if txn.transaction_type == 'transfer_out' %}
+                        <p class="text-base font-semibold text-rose-300">
+                            - {{ txn.amount|floatformat:2 }}
+                        </p>
+                    {% else %}
+                        <p class="text-base font-semibold text-teal-300">
+                            + {{ txn.amount|floatformat:2 }}
+                        </p>
+                    {% endif %}
+
+                    <p class="text-xs text-slate-500">{{ txn.counterparty|default:"-" }}</p>
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-sm text-slate-400">Hali tranzaksiya mavjud emas.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
