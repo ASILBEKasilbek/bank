@@ -7,13 +7,6 @@ from django.urls import reverse
 from rest_framework import viewsets
 
 from .forms import LoginForm, ProfileForm, RegistrationForm, TopUpForm, TransferForm
-from .models import Bank, Transaction
-from .serializers import BankSerializer
-
-
-class BankViewSet(viewsets.ModelViewSet):
-    queryset = Bank.objects.all()
-    serializer_class = BankSerializer
 
 
 def register_view(request):
@@ -117,11 +110,12 @@ def top_up_view(request):
         if form.is_valid():
             form.save(request.user, is_fake=is_fake, performed_by=request.user)
             msg = "Fake to'lov qo'shildi." if is_fake else "Balans to'ldirildi."
+            print(msg)
             messages.success(request, msg)
             return redirect("dashboard")
     else:
         form = TopUpForm()
-    return render(request, "transactions/top_up.html", {"form": form, "is_fake": is_fake})
+    return render(request, "transactions/top_up.html", {"form": form})
 
 
 @login_required
@@ -198,7 +192,5 @@ def docs_view(request):
             ],
         },
     ]
-    api_endpoints = [
-        {"method": "GET", "path": "/api/banks/", "desc": "Banklar ro'yxati (DRF API)"},
-    ]
-    return render(request, "docs.html", {"sections": sections, "api_endpoints": api_endpoints})
+
+    return render(request, "docs.html", {"sections": sections})

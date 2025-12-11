@@ -22,35 +22,5 @@
             </article>
         {% endfor %}
     </div>
-    <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">API ma'lumotlari</p>
-                <h2 class="text-2xl font-semibold text-white">Minimal REST nuqtalari</h2>
-            </div>
-            <span class="rounded-full border border-white/10 px-4 py-1 text-xs text-slate-300">DRF</span>
-        </div>
-        <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
-            <table class="w-full text-left text-sm text-slate-300">
-                <thead class="bg-slate-950/60 text-xs uppercase tracking-wide text-slate-400">
-                    <tr>
-                        <th class="px-4 py-3">Method</th>
-                        <th class="px-4 py-3">Route</th>
-                        <th class="px-4 py-3">Izoh</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for api in api_endpoints %}
-                        <tr class="border-t border-white/5">
-                            <td class="px-4 py-3 font-semibold text-neon">{{ api.method }}</td>
-                            <td class="px-4 py-3 font-mono text-slate-100">{{ api.path }}</td>
-                            <td class="px-4 py-3">{{ api.desc }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <p class="mt-4 text-sm text-slate-400">Qolgan barcha foydalanuvchi jarayonlari shu sahifada tasvirlangan va Swagger talab qilinmaydi.</p>
-    </section>
 </section>
 {% endblock %}
